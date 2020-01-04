@@ -10,13 +10,18 @@ import todo.cqrs.CommandBusAdapter
 import todo.cqrs.QueryBus
 import todo.cqrs.QueryBusAdapter
 import todo.hexarch.DomainService
-import todo.todolist.CreateTodoListCommandHandler
-import todo.todolist.ListTodoListQueryHandler
-import todo.todolist.TodoListsService
+import todo.domain.todolist.CreateTodoListCommandHandler
+import todo.domain.todolist.FindTodoListQueryHandler
+import todo.domain.todolist.ListTodoListQueryHandler
+import todo.domain.todolist.TodoListsService
 
+/**
+ * Configuration class that wires the Command and Query Bus to the domain. Command Bus and Query Bus are both unaware
+ * of the handler implementation and only loosely coupled via this configuration.
+ */
 @Configuration
 @ComponentScan(
-        basePackages = ["todo"],
+        basePackages = ["todo.domain"],
         includeFilters = [Filter(type = ANNOTATION, value = [DomainService::class])])
 class DomainConfiguration {
 
@@ -33,6 +38,7 @@ class DomainConfiguration {
 
         val queryBus = QueryBusAdapter()
         queryBus.addQueryHandler("ListTodoListQuery", ListTodoListQueryHandler(todoLists))
+        queryBus.addQueryHandler("FindTodoListQuery", FindTodoListQueryHandler(todoLists))
         return queryBus
     }
 }
